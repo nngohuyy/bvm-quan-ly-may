@@ -30,7 +30,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${plusJakartaSans.variable} antialiased`}
+        className={
+          `${geistSans.variable} ${geistMono.variable} ${plusJakartaSans.variable}
+          antialiased font-[family-name:var(--font-plus-jakarta-sans)]`
+        }
       >
         {children}
       </body>
