@@ -64,7 +64,7 @@ export const columns: ColumnDef<Equipment>[] = [
     header: () => <div className="font-bold">Ngày nhập kho</div>,
     cell: ({ row }) => {
       const date = new Date(row.getValue("delivery_date"))
-      return date.toLocaleDateString()
+      return date.toLocaleDateString('vi-VN')
     },
   },
   {

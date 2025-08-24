@@ -21,7 +21,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
+import { PencilSimpleIcon } from "@phosphor-icons/react/dist/ssr/PencilSimple"
+import { TrashIcon } from "@phosphor-icons/react/dist/ssr/Trash"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[],
@@ -50,7 +63,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <>
+    <div>
       <div className="flex items-center py-4">
         <Input
           placeholder="Tìm kiếm tên thiết bị..."
@@ -61,7 +74,7 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
       </div>
-      <div className="overflow-hidden rounded-md border">
+      <div className="hidden sm:block overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -105,6 +118,38 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-    </>
+      {/* Mobile view, will change to dynamic form later */}
+      <div className="flex flex-col gap-3 sm:hidden">
+        {
+          table.getRowModel().rows.map(equipment => (
+            <Card key={equipment.getValue('name')}>
+              <CardHeader>
+                <CardTitle>{equipment.getValue('name')}</CardTitle>
+                <CardDescription>{equipment.getValue('function')}</CardDescription>
+                <CardAction className="flex flex-row gap-1">
+                  <Button variant="secondary">
+                    <PencilSimpleIcon weight="duotone" />
+                  </Button>
+                  <Button variant="destructive">
+                    <TrashIcon weight="duotone" />
+                  </Button>
+                </CardAction>
+              </CardHeader>
+              <CardContent>
+                <p>Model: <span className="font-bold">{equipment.getValue('model')}</span></p>
+                <p>Vị trí: <span className="font-bold">{equipment.getValue('location')}</span></p>
+                <p>Ngày giao hàng: <span className="font-bold">{equipment.getValue('delivery_date').toLocaleDateString('vi-VN')}</span></p>
+                <p>Tình trạng: <span className="font-bold">{equipment.getValue('status')}</span></p>
+              </CardContent>
+              <CardFooter>
+                <Button type="submit" className="w-full">
+                  Xem chi tiết
+                </Button>
+              </CardFooter>
+            </Card>
+          ))
+        }
+      </div>
+    </div>
   )
 }
