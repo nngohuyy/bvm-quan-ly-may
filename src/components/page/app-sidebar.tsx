@@ -27,7 +27,7 @@ import { SignOutIcon } from "@phosphor-icons/react/dist/ssr"
 const items = [
   {
     title: "Chung",
-    url: "#",
+    url: "/trang-chu",
     icon: <HouseIcon size={20} weight="duotone" />,
   },
   {
@@ -46,10 +46,10 @@ const user = {
 export function AppSidebar() {
   return (
     <Sidebar className="overflow-hidden">
-      <SidebarHeader className="px-3 sm:px-4">
+      <SidebarHeader className="px-3 sm:px-4 h-20 border-b">
         <h1
           className="
-              uppercase sm:leading-tight lg:leading-[1.35] text-base sm:text-lg lg:text-xl font-extrabold
+              uppercase sm:leading-tight lg:leading-[1.35] text-base sm:text-lg font-extrabold
               bg-gradient-to-r from-[#0193DE] to-[#D92323]
               bg-clip-text text-transparent
             "
@@ -57,7 +57,6 @@ export function AppSidebar() {
           Hệ thống<br />quản lý máy
         </h1>
       </SidebarHeader>
-      <SidebarSeparator />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Chung</SidebarGroupLabel>

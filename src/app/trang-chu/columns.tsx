@@ -27,9 +27,22 @@ export type Equipment = {
   status: "available" | "unavailable" | "in_use"
 }
 
+export const defaultVisibleColumns = {
+  name: true,
+  model: true,
+  place_of_origin: false,
+  manufacture_year: false,
+  function: true,
+  delivery_date: false,
+  location: true,
+  status: true,
+  actions: true,
+}
+
 export const columns: ColumnDef<Equipment>[] = [
   {
     accessorKey: "name",
+    enableHiding: false,
     header: ({ column }) => {
       return (
         <Button
@@ -45,6 +58,7 @@ export const columns: ColumnDef<Equipment>[] = [
   },
   {
     accessorKey: "model",
+    enableHiding: false,
     header: () => <div className="font-bold">Model</div>,
   },
   {
@@ -105,6 +119,7 @@ export const columns: ColumnDef<Equipment>[] = [
   },
   {
     accessorKey: "actions",
+    enableHiding: false,
     header: () => <div className="font-bold">Hành động</div>,
     cell: ({ row }) => {
       const equipment = row.original

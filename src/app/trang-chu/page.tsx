@@ -66,7 +66,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div>
+    <div className="w-full overflow-hidden">
       <DataTable columns={columns} data={mockEquipments} />
     </div>
   )

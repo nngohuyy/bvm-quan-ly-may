@@ -2,11 +2,11 @@
 import { useState } from "react";
 
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/page/app-sidebar";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { AppSidebar } from "@/components/page/app-sidebar";
 
-import { SidebarIcon } from "@phosphor-icons/react/dist/ssr";
+import { BellIcon } from "@phosphor-icons/react/dist/ssr/Bell";
+import { SidebarIcon } from "@phosphor-icons/react/dist/ssr/Sidebar"
 
 function SidebarTrigger() {
   const { toggleSidebar } = useSidebar();
@@ -28,14 +28,14 @@ export default function RootLayout({
     <div className="min-h-screen bg-background">
       <SidebarProvider open={open} onOpenChange={setOpen}>
         <AppSidebar />
-        <div className="transition-all flex flex-col flex-1">
-          <div className="h-20 flex flex-row gap-2 items-center px-4">
+        <div className="transition-all flex flex-col flex-1 h-screen">
+          <div className="h-20 w-full flex justify-between items-center border-b px-4 bg-background sticky top-0 z-10">
             <SidebarTrigger />
-            {/* <h1 className="text-2xl font-bold">Welcome to the Dashboard</h1>
-            <p className="text-gray-600">Here you can manage your settings and preferences.</p> */}
+            <Button variant="ghost" className="!p-4">
+              <BellIcon className="size-8" weight="duotone" />
+            </Button>
           </div>
-          <Separator />
-          <div className="p-8">
+          <div className="flex-1 overflow-y-auto p-8">
             {children}
           </div>
         </div>
