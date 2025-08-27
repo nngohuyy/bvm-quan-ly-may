@@ -66,7 +66,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="max-w-9/10 mx-auto py-10">
+    <div>
       <DataTable columns={columns} data={mockEquipments} />
     </div>
   )
