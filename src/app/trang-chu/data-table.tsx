@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 import {
   ColumnDef,
@@ -54,6 +55,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(defaultVisibleColumns)
@@ -184,7 +186,9 @@ export function DataTable<TData, TValue>({
                 <p>Tình trạng: <span className="font-bold">{equipment.getValue('status')}</span></p>
               </CardContent>
               <CardFooter>
-                <Button type="submit" className="w-full">
+                <Button onClick={() => {
+                  router.push(`/trang-chu/thiet-bi/${equipment.getValue('id')}`)
+                }} type="submit" className="w-full">
                   Xem chi tiết
                 </Button>
               </CardFooter>
