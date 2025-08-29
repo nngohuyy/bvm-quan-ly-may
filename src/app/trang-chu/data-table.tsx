@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 import {
   ColumnDef,
@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/table"
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -41,21 +40,22 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
-import { PencilSimpleIcon } from "@phosphor-icons/react/dist/ssr/PencilSimple"
-import { TrashIcon } from "@phosphor-icons/react/dist/ssr/Trash"
+import { EyeIcon } from "@phosphor-icons/react/dist/icons/Eye"
 import { CaretDownIcon } from "@phosphor-icons/react/dist/ssr/CaretDown"
+
 import { defaultVisibleColumns } from "./columns"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[],
+  visibilityOptions: { label: string, value: string }[]
   data: TData[]
 }
 
 export function DataTable<TData, TValue>({
   columns,
+  visibilityOptions,
   data,
 }: DataTableProps<TData, TValue>) {
-  const router = useRouter()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(defaultVisibleColumns)
@@ -75,6 +75,13 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   })
+
+  const onColumnVisibilityChange = (columnId: string, isVisible: boolean) => {
+    setColumnVisibility((prev) => ({
+      ...prev,
+      [columnId]: isVisible,
+    }))
+  }
 
   return (
     <div className="rounded-md">
@@ -104,13 +111,10 @@ export function DataTable<TData, TValue>({
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      className="capitalize"
                       checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
+                      onCheckedChange={onColumnVisibilityChange.bind(null, column.id)}
                     >
-                      {column.id}
+                      {visibilityOptions.find(e => e.value === column.id)?.label || column.id}
                     </DropdownMenuCheckboxItem>
                   )
                 })}
@@ -170,14 +174,6 @@ export function DataTable<TData, TValue>({
               <CardHeader>
                 <CardTitle>{equipment.getValue('name')}</CardTitle>
                 <CardDescription>{equipment.getValue('function')}</CardDescription>
-                <CardAction className="flex flex-row gap-1">
-                  <Button variant="secondary">
-                    <PencilSimpleIcon weight="duotone" />
-                  </Button>
-                  <Button variant="destructive">
-                    <TrashIcon weight="duotone" />
-                  </Button>
-                </CardAction>
               </CardHeader>
               <CardContent>
                 <p>Model: <span className="font-bold">{equipment.getValue('model')}</span></p>
@@ -186,11 +182,11 @@ export function DataTable<TData, TValue>({
                 <p>Tình trạng: <span className="font-bold">{equipment.getValue('status')}</span></p>
               </CardContent>
               <CardFooter>
-                <Button onClick={() => {
-                  router.push(`/trang-chu/thiet-bi/${equipment.getValue('id')}`)
-                }} type="submit" className="w-full">
-                  Xem chi tiết
-                </Button>
+                <Link href={`/trang-chu/thiet-bi/${equipment.getValue('id')}`} className="w-full">
+                  <Button className="w-full">
+                    <EyeIcon className="size-5" size={32} weight="duotone" /> Xem chi tiết
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
           ))

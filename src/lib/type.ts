@@ -1,3 +1,12 @@
+export type User = {
+  id: string
+  username: string
+  name: {
+    first: string
+    last: string
+  }
+}
+
 export type MaintenanceHistory = {
   id: string
   equipment_id: string

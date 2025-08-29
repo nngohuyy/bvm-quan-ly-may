@@ -11,13 +11,142 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 import { PlusIcon } from '@phosphor-icons/react/Plus'
+import { TrashIcon } from '@phosphor-icons/react/Trash'
+import { FloppyDiskIcon } from '@phosphor-icons/react/FloppyDisk'
 import { ListBulletsIcon } from '@phosphor-icons/react/ListBullets'
 import { PencilSimpleIcon } from '@phosphor-icons/react/PencilSimple'
 import { ClockCounterClockwiseIcon } from '@phosphor-icons/react/ClockCounterClockwise'
 
 import { mockEquipments } from '@/mocks/equipment'
+
+function EditFormDialog({ equipment }: { equipment: typeof mockEquipments[0] | undefined }) {
+  const editEquipmentFormInput = [
+    {
+      label: "Tên thiết bị",
+      name: "name",
+      defaultValue: equipment?.name
+    },
+    {
+      label: "Model",
+      name: "model",
+      defaultValue: equipment?.model
+    },
+    {
+      label: "Nơi sản xuất",
+      name: "place_of_origin",
+      defaultValue: equipment?.place_of_origin
+    },
+    {
+      label: "Năm sản xuất",
+      name: "manufacture_year",
+      defaultValue: equipment?.manufacture_year
+    },
+    {
+      label: "Chức năng",
+      name: "function",
+      defaultValue: equipment?.function,
+    },
+    {
+      label: "Ngày bàn giao",
+      name: "delivery_date",
+      defaultValue: equipment?.delivery_date ? equipment.delivery_date.toLocaleDateString('vi-VN') : ''
+    },
+    {
+      label: "Vị trí đặt",
+      name: "location",
+      defaultValue: equipment?.location
+    },
+  ]
+
+  return (
+    <Dialog>
+      <form>
+        <DialogTrigger asChild>
+          <Button variant='default'>
+            <PencilSimpleIcon className='size-5' weight='duotone' /> Chỉnh sửa
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Chỉnh sửa thông tin thiết bị</DialogTitle>
+            <DialogDescription>
+              Thực hiện thay đổi cho thiết bị của bạn tại đây. Nhấp vào &quot;Lưu thay đổi&quot; khi hoàn tất.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className='h-[400px]'>
+            <div className="grid gap-4">
+              {
+                editEquipmentFormInput.map((field) => (
+                  <div className="grid gap-3" key={field.name}>
+                    <Label htmlFor={`${field.name}-1`}>{field.label}</Label>
+                    <Input id={`${field.name}-1`} name={field.name} defaultValue={field.defaultValue} />
+                  </div>
+                ))
+              }
+            </div>
+          </ScrollArea>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="ghost">Hủy</Button>
+            </DialogClose>
+            <Button type="submit"><FloppyDiskIcon className='size-5' weight='duotone' /> Lưu thay đổi</Button>
+          </DialogFooter>
+        </DialogContent>
+      </form>
+    </Dialog>
+  )
+}
+
+function DeleteAlertDialog() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant='destructive'>
+          <TrashIcon className='size-5' weight='duotone' /> Xóa thiết bị
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Bạn có hoàn toàn chắc chắn không?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Hành động này không thể hoàn tác. Nó sẽ xóa vĩnh viễn thiết bị của bạn và
+            xóa dữ liệu của bạn khỏi máy chủ của chúng tôi.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Hủy</AlertDialogCancel>
+          <AlertDialogAction>Tiếp tục</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
 
 export default function EquipmentDetailsPage({
   params,
@@ -35,10 +164,9 @@ export default function EquipmentDetailsPage({
             <ListBulletsIcon size={`1.5rem`} weight='duotone' />
             Thông tin cơ bản
           </CardTitle>
-          <CardAction className='hidden sm:block'>
-            <Button variant='outline' size='sm'>
-              <PencilSimpleIcon /> Chỉnh sửa
-            </Button>
+          <CardAction className='hidden sm:flex gap-2'>
+            <EditFormDialog equipment={equipment} />
+            <DeleteAlertDialog />
           </CardAction>
         </CardHeader>
         <CardContent className='flex flex-col sm:grid grid-cols-3 gap-2'>
@@ -67,11 +195,10 @@ export default function EquipmentDetailsPage({
             Chức năng: <span className='font-normal text-black'>{equipment?.function}</span>
           </p>
         </CardContent>
-        <CardFooter>
-          <CardAction className='block sm:hidden'>
-            <Button variant='outline' size='sm'>
-              <PencilSimpleIcon /> Chỉnh sửa
-            </Button>
+        <CardFooter className='justify-end'>
+          <CardAction className='flex gap-2 sm:hidden'>
+            <EditFormDialog equipment={equipment} />
+            <DeleteAlertDialog />
           </CardAction>
         </CardFooter>
       </Card>
@@ -82,8 +209,8 @@ export default function EquipmentDetailsPage({
             Lịch sử sửa chữa
           </CardTitle>
           <CardAction className='hidden sm:block'>
-            <Button variant="outline" size="sm">
-              <PlusIcon /> Thêm sửa chữa
+            <Button variant='default'>
+              <PlusIcon className='size-5' weight='duotone' /> Thêm lịch sử sửa chữa
             </Button>
           </CardAction>
         </CardHeader>
@@ -113,10 +240,10 @@ export default function EquipmentDetailsPage({
             </tbody>
           </table>
         </CardContent>
-        <CardFooter>
-          <CardAction className='block sm:hidden'>
-            <Button variant="outline" size="sm">
-              <PlusIcon /> Thêm sửa chữa
+        <CardFooter className='justify-end'>
+          <CardAction className='flex gap-2 sm:hidden'>
+            <Button variant='default'>
+              <PlusIcon className='size-5' weight='duotone' /> Thêm lịch sử sửa chữa
             </Button>
           </CardAction>
         </CardFooter>

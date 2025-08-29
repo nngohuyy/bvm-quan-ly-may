@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/badge"
 import { HouseIcon } from "@phosphor-icons/react/dist/ssr/House"
 import { ClockCounterClockwiseIcon } from "@phosphor-icons/react/dist/ssr/ClockCounterClockwise"
 import { SignOutIcon } from "@phosphor-icons/react/dist/ssr"
+import Link from "next/link"
 
 const items = [
   {
@@ -65,10 +66,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <span>{item.icon}</span>
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
