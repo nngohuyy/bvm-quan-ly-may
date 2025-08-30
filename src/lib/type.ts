@@ -1,10 +1,9 @@
 export type User = {
   id: string
   username: string
-  name: {
-    first: string
-    last: string
-  }
+  full_name: string
+  role_id: string
+  updated_at: Date
 }
 
 export type MaintenanceHistory = {

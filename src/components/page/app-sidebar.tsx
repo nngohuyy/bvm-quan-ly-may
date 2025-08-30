@@ -24,6 +24,7 @@ import { HouseIcon } from "@phosphor-icons/react/dist/ssr/House"
 import { ClockCounterClockwiseIcon } from "@phosphor-icons/react/dist/ssr/ClockCounterClockwise"
 import { SignOutIcon } from "@phosphor-icons/react/dist/ssr"
 import Link from "next/link"
+import { useAuth } from "@/context/AuthContext"
 
 const items = [
   {
@@ -38,13 +39,9 @@ const items = [
   },
 ]
 
-const user = {
-  name: "Ngô Thị Hồng Cúc",
-  username: "hongcuc2005",
-  title: "Điều dưỡng",
-}
-
 export function AppSidebar() {
+  const { profile, signOut } = useAuth();
+
   return (
     <Sidebar className="overflow-hidden">
       <SidebarHeader className="px-3 sm:px-4 h-20 border-b">
@@ -85,15 +82,15 @@ export function AppSidebar() {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-xs sm:text-sm font-medium text-gray-900 truncate uppercase">{user.name}</p>
-            <p className="text-xs text-gray-500 truncate my-0.5">@{user.username}</p>
-            <Badge variant="default">{user.title}</Badge>
+            <p className="text-xs sm:text-sm font-medium text-gray-900 truncate uppercase">{profile?.full_name}</p>
+            <p className="text-xs text-gray-500 truncate my-0.5">@{profile?.username}</p>
+            <Badge variant="default">{profile?.roles?.name}</Badge>
           </div>
         </div>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <a href="#">
+              <a href="/dang-nhap" onClick={signOut}>
                 <span>
                   <SignOutIcon size={20} weight="duotone" />
                 </span>
