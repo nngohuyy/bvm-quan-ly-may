@@ -125,7 +125,7 @@ export const columns: ColumnDef<Equipment>[] = [
       const equipment = row.original
 
       return (
-        <Button asChild variant="secondary" size="sm" className="gap-2">
+        <Button asChild size="sm" className="gap-2">
           <Link href={`/trang-chu/thiet-bi/${equipment.id}`}>
             <EyeIcon className="size-5" weight="duotone" /> Xem chi tiết
           </Link>

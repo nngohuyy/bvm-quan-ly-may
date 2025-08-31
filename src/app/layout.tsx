@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
+import ProtectedRoutes from "@/context/ProtectedRoutes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,9 @@ export default function RootLayout({
         }
       >
         <AuthProvider>
-          {children}
+          <ProtectedRoutes>
+            {children}
+          </ProtectedRoutes>
         </AuthProvider>
       </body>
     </html>

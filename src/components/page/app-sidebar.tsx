@@ -39,6 +39,29 @@ const items = [
   },
 ]
 
+const roleMap = [
+  {
+    key: "nurse",
+    title: "Điều dưỡng",
+  },
+  {
+    key: "doctor",
+    title: "Bác sĩ",
+  },
+  {
+    key: "admin",
+    title: "Quản trị viên",
+  },
+  {
+    key: "technician",
+    title: "Kỹ thuật viên",
+  },
+  {
+    key: "caregiver",
+    title: "Hộ lý",
+  }
+]
+
 export function AppSidebar() {
   const { profile, signOut } = useAuth();
 
@@ -84,18 +107,16 @@ export function AppSidebar() {
           <div>
             <p className="text-xs sm:text-sm font-medium text-gray-900 truncate uppercase">{profile?.full_name}</p>
             <p className="text-xs text-gray-500 truncate my-0.5">@{profile?.username}</p>
-            <Badge variant="default">{profile?.roles?.name}</Badge>
+            <Badge variant="default">{roleMap.find((role) => role.key === profile?.roles?.name)?.title}</Badge>
           </div>
         </div>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="/dang-nhap" onClick={signOut}>
-                <span>
-                  <SignOutIcon size={20} weight="duotone" />
-                </span>
-                <span>Đăng xuất</span>
-              </a>
+            <SidebarMenuButton onClick={signOut} className="hover:cursor-pointer">
+              <span>
+                <SignOutIcon size={20} weight="duotone" />
+              </span>
+              <span>Đăng xuất</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

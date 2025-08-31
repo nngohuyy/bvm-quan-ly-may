@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { AddFormDialog } from "@/components/page/equipment-dialog"
 
 import { EyeIcon } from "@phosphor-icons/react/dist/icons/Eye"
 import { CaretDownIcon } from "@phosphor-icons/react/dist/ssr/CaretDown"
@@ -85,16 +86,19 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-md">
-      <div className="flex justify-between items-center pb-4">
-        <Input
-          placeholder="Tìm kiếm tên thiết bị..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <div className="hidden sm:block">
+      <div className="flex justify-between items-center pb-4 gap-2">
+        <div className="flex w-full justify-between items-center gap-2">
+          <Input
+            placeholder="Tìm kiếm tên thiết bị..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <AddFormDialog />
+        </div>
+        <div className="hidden sm:flex gap-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
@@ -183,7 +187,7 @@ export function DataTable<TData, TValue>({
               </CardContent>
               <CardFooter>
                 <Link href={`/trang-chu/thiet-bi/${equipment.getValue('id')}`} className="w-full">
-                  <Button className="w-full">
+                  <Button size="sm" className="w-full">
                     <EyeIcon className="size-5" size={32} weight="duotone" /> Xem chi tiết
                   </Button>
                 </Link>
