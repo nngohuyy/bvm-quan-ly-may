@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { EquipmentFormData } from '@/lib/type'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -61,3 +62,38 @@ export const signInUser = async (email: string, password: string) => {
     return error;
   }
 };
+
+export const getAllEquipments = async () => {
+  try {
+    const { data: equipments, error } = await supabase
+      .from('equipment')
+      .select('*')
+
+    if (error) {
+      throw new Error("Failed to fetch equipments");
+    }
+    console.log("Fetched equipments:", equipments);
+    return equipments;
+  } catch (error) {
+    console.log('Unexpected Error:', error);
+    return null;
+  }
+};
+
+export const addEquipment = async (equipment: EquipmentFormData) => {
+  try {
+    const { data, error } = await supabase
+      .from('equipment')
+      .insert([equipment])
+
+    if (error) {
+      throw new Error("Failed to add equipment");
+    }
+    
+    console.log("Added equipment:", data);
+    return data;
+  } catch (error) {
+    console.log('Unexpected Error:', error);
+    return null;
+  }
+}

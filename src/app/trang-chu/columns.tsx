@@ -9,6 +9,7 @@ import { FunnelSimpleIcon } from "@phosphor-icons/react/FunnelSimple"
 import { EyeIcon } from "@phosphor-icons/react/Eye"
 
 import { Equipment } from "@/lib/type"
+import { Badge } from "@/components/ui/badge"
 
 export const defaultVisibleColumns = {
   id: false,
@@ -90,30 +91,24 @@ export const columns: ColumnDef<Equipment>[] = [
     header: () => <div className="font-bold">Trạng thái</div>,
     cell: ({ row }) => {
       const status = row.getValue("status")
-      let color = ""
+      let variant: "default" | "destructive" | "outline" | "secondary" | null | undefined = "default"
+      let translation = ""
       switch (status) {
         case "available":
-          color = "green"
+          variant = "outline"
+          translation = "Bình thường"
           break
-        case "unavailable":
-          color = "red"
-          break
-        case "in_use":
-          color = "orange"
+        case "under_maintenance":
+          variant = "destructive"
+          translation = "Đang bảo trì"
           break
         default:
-          color = "gray"
+          variant = "default"
       }
       return (
-        <span
-          style={{
-            color,
-            fontWeight: "bold",
-            textTransform: "capitalize",
-          }}
-        >
-          {(status as string).replace("_", " ")}
-        </span>
+        <Badge variant={variant}>
+          {translation}
+        </Badge>
       )
     },
   },

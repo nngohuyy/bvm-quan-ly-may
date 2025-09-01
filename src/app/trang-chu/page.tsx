@@ -1,10 +1,23 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { columns, visibilityOptions } from "./columns"
 import { DataTable } from "./data-table"
-import { mockEquipments } from "@/mocks/equipment"
+import { getAllEquipments } from "@/utils/supabase"
+import { Equipment } from "@/lib/type"
 
 export default function HomePage() {
+  const [equipments, setEquipments] = useState<Equipment[]>([]);
+
+  useEffect(() => {
+    const fetchEquipments = async () => {
+      const equipments = await getAllEquipments();
+      console.log(equipments);
+      setEquipments(equipments ?? []);
+    }
+
+    fetchEquipments();
+  }, [])
   return (
     <div className="w-full overflow-hidden">
       <div className="mb-6 sm:mb-8">
@@ -14,7 +27,7 @@ export default function HomePage() {
       <DataTable
         columns={columns}
         visibilityOptions={visibilityOptions}
-        data={mockEquipments}
+        data={equipments}
       />
     </div>
   )

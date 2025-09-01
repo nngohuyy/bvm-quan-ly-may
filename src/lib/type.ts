@@ -16,9 +16,7 @@ export type MaintenanceHistory = {
   location: string
 }
 
-export type Equipment = {
-  id: string
-  user_id: string
+export interface EquipmentFormData {
   name: string
   model: string
   place_of_origin: string
@@ -26,6 +24,10 @@ export type Equipment = {
   function: string
   delivery_date: Date
   location: string
-  status: "available" | "unavailable" | "in_use"
-  maintenance_history: MaintenanceHistory[]
+}
+
+export interface Equipment extends EquipmentFormData {
+  id: string
+  status: 'available' | 'under_maintenance'
+  maintenance_history?: MaintenanceHistory[]
 }

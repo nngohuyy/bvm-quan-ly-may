@@ -11,7 +11,7 @@ export const mockEquipments: Equipment[] = [
     function: "Separates substances of different densities",
     delivery_date: new Date("2019-03-15"),
     location: "Lab A - Room 102",
-    status: "in_use",
+    status: "under_maintenance",
     maintenance_history: [
       {
         id: "mh-001",
@@ -66,7 +66,7 @@ export const mockEquipments: Equipment[] = [
     function: "Magnifying biological samples",
     delivery_date: new Date("2017-01-05"),
     location: "Lab B - Room 110",
-    status: "in_use",
+    status: "available",
     maintenance_history: [
       {
         id: "mh-004",
@@ -98,7 +98,7 @@ export const mockEquipments: Equipment[] = [
     function: "Measuring light absorbance of samples",
     delivery_date: new Date("2019-12-12"),
     location: "Lab C - Room 305",
-    status: "unavailable",
+    status: "under_maintenance",
     maintenance_history: [
       {
         id: "mh-006",

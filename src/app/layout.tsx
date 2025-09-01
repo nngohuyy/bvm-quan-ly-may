@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 import ProtectedRoutes from "@/context/ProtectedRoutes";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
         <AuthProvider>
           <ProtectedRoutes>
             {children}
+            <Toaster />
           </ProtectedRoutes>
         </AuthProvider>
       </body>

@@ -5,7 +5,6 @@ import { toast } from "sonner"
 import { format } from "date-fns"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { vi } from "date-fns/locale"
 
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
@@ -27,7 +26,8 @@ import {
 } from "@/components/ui/popover"
 
 import { CalendarBlankIcon } from "@phosphor-icons/react/dist/ssr/CalendarBlank"
-import { ScrollArea } from "../ui/scroll-area"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { addEquipment } from "@/utils/supabase"
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -67,8 +67,7 @@ export function AddEquipmentForm() {
     },
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(JSON.stringify(data, null, 2))
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     toast("You submitted the following values", {
       description: (
         <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
@@ -76,6 +75,8 @@ export function AddEquipmentForm() {
         </pre>
       ),
     })
+
+    const submit = await addEquipment(data);
   }
 
   return (
@@ -178,7 +179,6 @@ export function AddEquipmentForm() {
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        locale={vi}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
                         }

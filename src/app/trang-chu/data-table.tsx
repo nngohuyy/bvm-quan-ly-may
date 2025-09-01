@@ -45,6 +45,7 @@ import { EyeIcon } from "@phosphor-icons/react/dist/icons/Eye"
 import { CaretDownIcon } from "@phosphor-icons/react/dist/ssr/CaretDown"
 
 import { defaultVisibleColumns } from "./columns"
+import { Badge } from "@/components/ui/badge"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[],
@@ -176,14 +177,20 @@ export function DataTable<TData, TValue>({
           table.getRowModel().rows.map(equipment => (
             <Card key={equipment.getValue('name')}>
               <CardHeader>
-                <CardTitle>{equipment.getValue('name')}</CardTitle>
+                <CardTitle className="flex items-center">
+                  {equipment.getValue('name')}
+                  <span className="font-bold ml-2">
+                    <Badge variant={equipment.getValue('status') === 'available' ? 'outline' : 'destructive'}>
+                      {equipment.getValue('status') === 'available' ? 'Bình thường' : 'Đang bảo trì'}
+                    </Badge>
+                  </span>
+                </CardTitle>
                 <CardDescription>{equipment.getValue('function')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <p>Model: <span className="font-bold">{equipment.getValue('model')}</span></p>
                 <p>Vị trí: <span className="font-bold">{equipment.getValue('location')}</span></p>
-                <p>Ngày giao hàng: <span className="font-bold">{equipment.getValue('delivery_date').toLocaleDateString('vi-VN')}</span></p>
-                <p>Tình trạng: <span className="font-bold">{equipment.getValue('status')}</span></p>
+                <p>Ngày bàn giao: <span className="font-bold">{equipment.getValue('delivery_date')}</span></p>
               </CardContent>
               <CardFooter>
                 <Link href={`/trang-chu/thiet-bi/${equipment.getValue('id')}`} className="w-full">
