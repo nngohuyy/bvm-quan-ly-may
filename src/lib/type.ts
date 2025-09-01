@@ -11,7 +11,7 @@ export type MaintenanceHistory = {
   equipment_id: string
   maintenance_date: Date
   description: string
-  performed_by: string
+  profiles: User
   condition: string
   location: string
 }
@@ -29,5 +29,5 @@ export interface EquipmentFormData {
 export interface Equipment extends EquipmentFormData {
   id: string
   status: 'available' | 'under_maintenance'
-  maintenance_history?: MaintenanceHistory[]
+  maintenance_history: MaintenanceHistory[]
 }

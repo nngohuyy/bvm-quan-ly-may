@@ -89,11 +89,38 @@ export const addEquipment = async (equipment: EquipmentFormData) => {
     if (error) {
       throw new Error("Failed to add equipment");
     }
-    
+
     console.log("Added equipment:", data);
     return data;
   } catch (error) {
     console.log('Unexpected Error:', error);
+    return null;
+  }
+}
+
+export async function getEquipmentWithHistory(equipmentId: string) {
+  try {
+    const { data, error } = await supabase
+      .from('equipment')
+      .select('*, maintenance_history(*, profiles(full_name))')
+      .eq('id', equipmentId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching data:', error.message);
+      return null;
+    }
+
+    if (!data) {
+      console.log(`No equipment found with ID: ${equipmentId}`);
+      return null;
+    }
+    
+    console.log('Successfully fetched equipment details:', data);
+    return data;
+
+  } catch (err) {
+    console.error('An unexpected error occurred:', err);
     return null;
   }
 }
