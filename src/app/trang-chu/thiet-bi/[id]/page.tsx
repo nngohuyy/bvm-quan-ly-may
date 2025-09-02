@@ -209,13 +209,19 @@ export default function EquipmentDetailsPage({
             <p className='font-bold text-gray-500'>
               Vị trí đặt: <span className='font-normal text-black'>{equipment?.location}</span>
             </p>
-            <p className='font-bold text-gray-500'>
+            <p className='font-bold text-gray-500 flex items-center gap-2'>
               Trạng thái:
-              <span className="font-bold ml-2">
-                <Badge variant={equipment?.status === 'available' ? 'outline' : 'destructive'}>
-                  {equipment?.status === 'available' ? 'Bình thường' : 'Đang bảo trì'}
+              {equipment?.status === "available" ? (
+                <Badge className='rounded-full border-none bg-green-600/10 text-green-600 focus-visible:ring-green-600/20 focus-visible:outline-none dark:bg-green-400/10 dark:text-green-400 dark:focus-visible:ring-green-400/40 [a&]:hover:bg-green-600/5 dark:[a&]:hover:bg-green-400/5'>
+                  <span className='size-1.5 rounded-full bg-green-600 dark:bg-green-400' aria-hidden='true' />
+                  Bình thường
                 </Badge>
-              </span>
+              ) : equipment?.status === "under_maintenance" ? (
+                <Badge className='bg-destructive/10 [a&]:hover:bg-destructive/5 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive rounded-full border-none focus-visible:outline-none'>
+                  <span className='bg-destructive size-1.5 rounded-full' aria-hidden='true' />
+                  Đang bảo trì
+                </Badge>
+              ) : null}
             </p>
             <p className='font-bold text-gray-500'>
               Chức năng: <span className='font-normal text-black'>{equipment?.function}</span>

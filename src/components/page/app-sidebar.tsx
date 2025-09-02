@@ -107,7 +107,7 @@ export function AppSidebar() {
           <div>
             <p className="text-xs sm:text-sm font-medium text-gray-900 truncate uppercase">{profile?.full_name}</p>
             <p className="text-xs text-gray-500 truncate my-0.5">@{profile?.username}</p>
-            <Badge variant="default">{roleMap.find((role) => role.key === profile?.roles?.name)?.title}</Badge>
+            <Badge variant="outline" className="px-2 py-0.5 text-xs">{roleMap.find((role) => role.key === profile?.roles?.name)?.title}</Badge>
           </div>
         </div>
         <SidebarMenu>

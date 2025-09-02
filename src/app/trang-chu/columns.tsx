@@ -91,22 +91,27 @@ export const columns: ColumnDef<Equipment>[] = [
     header: () => <div className="font-bold">Trạng thái</div>,
     cell: ({ row }) => {
       const status = row.getValue("status")
-      let variant: "default" | "destructive" | "outline" | "secondary" | null | undefined = "default"
       let translation = ""
+      let classNameBadge = ""
+      let classNameDot = ""
       switch (status) {
         case "available":
-          variant = "outline"
+          classNameBadge = 'rounded-full border-none bg-green-600/10 text-green-600 focus-visible:ring-green-600/20 focus-visible:outline-none dark:bg-green-400/10 dark:text-green-400 dark:focus-visible:ring-green-400/40 [a&]:hover:bg-green-600/5 dark:[a&]:hover:bg-green-400/5'
+          classNameDot = 'size-1.5 rounded-full bg-green-600 dark:bg-green-400'
           translation = "Bình thường"
           break
         case "under_maintenance":
-          variant = "destructive"
+          classNameBadge = 'bg-destructive/10 [a&]:hover:bg-destructive/5 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive rounded-full border-none focus-visible:outline-none'
+          classNameDot = 'bg-destructive size-1.5 rounded-full'
           translation = "Đang bảo trì"
           break
         default:
-          variant = "default"
+          classNameBadge = ''
+          classNameDot = ''
       }
       return (
-        <Badge variant={variant}>
+        <Badge className={classNameBadge}>
+          <span className={classNameDot} aria-hidden='true' />
           {translation}
         </Badge>
       )
