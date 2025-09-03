@@ -28,14 +28,26 @@ import { TrashIcon } from '@phosphor-icons/react/Trash'
 import { ListBulletsIcon } from '@phosphor-icons/react/ListBullets'
 import { ClockCounterClockwiseIcon } from '@phosphor-icons/react/ClockCounterClockwise'
 
-import { getEquipmentWithHistory } from '@/utils/supabase'
+import { deleteEquipment, getEquipmentWithHistory } from '@/utils/supabase'
 import { Equipment } from '@/lib/type'
 import { formatTimestamp } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { MaintenanceHistoryDialog } from '@/components/page/maintenance-history-dialog'
 import { EditFormDialog } from '@/components/page/equipment-dialog'
+import { toast } from 'sonner'
 
-function DeleteAlertDialog() {
+function DeleteAlertDialog({ id }: { id: string }) {
+  async function onDelete() {
+    try {
+      const error = await deleteEquipment(id);
+      if (error) throw error;
+      toast.success("Xóa thiết bị thành công");
+      window.location.href = '/trang-chu';
+    } catch (error) {
+      console.log(error);
+      toast.error("Xóa thiết bị thất bại");
+    }
+  }
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -53,7 +65,7 @@ function DeleteAlertDialog() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Hủy</AlertDialogCancel>
-          <AlertDialogAction>Tiếp tục</AlertDialogAction>
+          <AlertDialogAction onClick={onDelete}>Tiếp tục</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -102,7 +114,7 @@ export default function EquipmentDetailsPage({
                 delivery_date: equipment?.delivery_date ?? new Date(),
                 location: equipment?.location ?? ""
               }} />
-              <DeleteAlertDialog />
+              <DeleteAlertDialog id={id} />
             </CardAction>
           </CardHeader>
           <CardContent className='flex flex-col sm:grid grid-cols-3 gap-2'>
@@ -153,7 +165,7 @@ export default function EquipmentDetailsPage({
                 delivery_date: equipment?.delivery_date ?? new Date(),
                 location: equipment?.location ?? ""
               }} />
-              <DeleteAlertDialog />
+              <DeleteAlertDialog id={id} />
             </CardAction>
           </CardFooter>
         </Card>
