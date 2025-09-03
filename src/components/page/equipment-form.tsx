@@ -13,7 +13,6 @@ import { Calendar } from "@/components/ui/calendar"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -27,7 +26,7 @@ import {
 
 import { CalendarBlankIcon } from "@phosphor-icons/react/dist/ssr/CalendarBlank"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { addEquipment } from "@/utils/supabase"
+import { addEquipment, editEquipment } from "@/utils/supabase"
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -68,15 +67,15 @@ export function AddEquipmentForm() {
   })
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast("You submitted the following values", {
-      description: (
-        <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
-
-    const submit = await addEquipment(data);
+    try {
+      const error = await addEquipment(data);
+      if (error) throw (error);
+      toast.success("Thêm thiết bị thành công!");
+      window.location.reload();
+    } catch (error) {
+      console.log("Lỗi khi thêm thiết bị:", error);
+      toast.error("Thêm thiết bị thất bại!");
+    }
   }
 
   return (
@@ -130,7 +129,16 @@ export function AddEquipmentForm() {
                 <FormItem>
                   <FormLabel>Năm sản xuất</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Nhập năm sản xuất" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Nhập năm sản xuất"
+                      {...field}
+                      value={field.value || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value ? Number(value) : undefined);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -186,9 +194,172 @@ export function AddEquipmentForm() {
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>
-                    Your date of birth is used to calculate your age.
-                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Vị trí đặt</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nhập vị trí đặt" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </ScrollArea>
+        <div className="flex justify-end">
+          <Button className="w-fit" type="submit">
+            Lưu thay đổi
+          </Button>
+        </div>
+      </form>
+    </Form>
+  )
+}
+
+export function EditEquipmentForm({
+  id,
+  initialData,
+}: {
+  id: string
+  initialData: z.infer<typeof FormSchema>
+}) {
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: initialData,
+  })
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      const error = await editEquipment(id, data);
+      if (error) throw (error);
+      toast.success("Cập nhật thiết bị thành công!");
+      window.location.reload();
+    } catch (error) {
+      console.log("Lỗi khi cập nhật thông tin thiết bị:", error);
+      toast.error("Đã xảy ra lỗi khi cập nhật thông tin thiết bị.");
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <ScrollArea className="h-[400px]">
+          <div className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tên thiết bị</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nhập tên thiết bị" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="model"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Model</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nhập model" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="place_of_origin"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nơi sản xuất</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nhập nơi sản xuất" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="manufacture_year"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Năm sản xuất</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="Nhập năm sản xuất"
+                      value={field.value || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value ? Number(value) : undefined);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="function"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Chức năng</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nhập chức năng" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="delivery_date"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Ngày bàn giao</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Chọn ngày bàn giao</span>
+                          )}
+                          <CalendarBlankIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        captionLayout="dropdown"
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}

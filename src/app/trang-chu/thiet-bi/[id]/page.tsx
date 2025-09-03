@@ -12,16 +12,6 @@ import {
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -32,101 +22,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { TrashIcon } from '@phosphor-icons/react/Trash'
-import { FloppyDiskIcon } from '@phosphor-icons/react/FloppyDisk'
 import { ListBulletsIcon } from '@phosphor-icons/react/ListBullets'
-import { PencilSimpleIcon } from '@phosphor-icons/react/PencilSimple'
 import { ClockCounterClockwiseIcon } from '@phosphor-icons/react/ClockCounterClockwise'
 
-import { mockEquipments } from '@/mocks/equipment'
 import { getEquipmentWithHistory } from '@/utils/supabase'
 import { Equipment } from '@/lib/type'
 import { formatTimestamp } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { MaintenanceHistoryDialog } from '@/components/page/maintenance-history-dialog'
-
-function EditFormDialog({ equipment }: { equipment: typeof mockEquipments[0] | undefined }) {
-  const editEquipmentFormInput = [
-    {
-      label: "Tên thiết bị",
-      name: "name",
-      defaultValue: equipment?.name
-    },
-    {
-      label: "Model",
-      name: "model",
-      defaultValue: equipment?.model
-    },
-    {
-      label: "Nơi sản xuất",
-      name: "place_of_origin",
-      defaultValue: equipment?.place_of_origin
-    },
-    {
-      label: "Năm sản xuất",
-      name: "manufacture_year",
-      defaultValue: equipment?.manufacture_year
-    },
-    {
-      label: "Chức năng",
-      name: "function",
-      defaultValue: equipment?.function,
-    },
-    {
-      label: "Ngày bàn giao",
-      name: "delivery_date",
-      defaultValue: equipment?.delivery_date.toLocaleString()
-    },
-    {
-      label: "Vị trí đặt",
-      name: "location",
-      defaultValue: equipment?.location
-    },
-  ]
-
-  return (
-    <Dialog>
-      <form>
-        <DialogTrigger asChild>
-          <Button variant='default'>
-            <PencilSimpleIcon className='size-5' weight='duotone' /> Chỉnh sửa
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Chỉnh sửa thông tin thiết bị</DialogTitle>
-            <DialogDescription>
-              Thực hiện thay đổi cho thiết bị của bạn tại đây. Nhấp vào &quot;Lưu thay đổi&quot; khi hoàn tất.
-            </DialogDescription>
-          </DialogHeader>
-          <ScrollArea className='h-[400px]'>
-            <div className="grid gap-4">
-              {
-                editEquipmentFormInput.map((field) => (
-                  <div className="grid gap-3" key={field.name}>
-                    <Label htmlFor={`${field.name}-1`}>{field.label}</Label>
-                    <Input id={`${field.name}-1`} name={field.name} defaultValue={field.defaultValue} />
-                  </div>
-                ))
-              }
-            </div>
-          </ScrollArea>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="ghost">Hủy</Button>
-            </DialogClose>
-            <Button type="submit"><FloppyDiskIcon className='size-5' weight='duotone' /> Lưu thay đổi</Button>
-          </DialogFooter>
-        </DialogContent>
-      </form>
-    </Dialog>
-  )
-}
+import { EditFormDialog } from '@/components/page/equipment-dialog'
 
 function DeleteAlertDialog() {
   return (
@@ -186,7 +93,15 @@ export default function EquipmentDetailsPage({
               Thông tin cơ bản
             </CardTitle>
             <CardAction className='hidden sm:flex gap-2'>
-              <EditFormDialog equipment={equipment} />
+              <EditFormDialog id={id} initialData={{
+                name: equipment?.name ?? "",
+                model: equipment?.model ?? "",
+                place_of_origin: equipment?.place_of_origin ?? "",
+                manufacture_year: equipment?.manufacture_year ?? new Date().getFullYear(),
+                function: equipment?.function ?? "",
+                delivery_date: equipment?.delivery_date ?? new Date(),
+                location: equipment?.location ?? ""
+              }} />
               <DeleteAlertDialog />
             </CardAction>
           </CardHeader>
@@ -229,7 +144,15 @@ export default function EquipmentDetailsPage({
           </CardContent>
           <CardFooter className='justify-end'>
             <CardAction className='flex gap-2 sm:hidden'>
-              <EditFormDialog equipment={equipment} />
+              <EditFormDialog id={id} initialData={{
+                name: equipment?.name ?? "",
+                model: equipment?.model ?? "",
+                place_of_origin: equipment?.place_of_origin ?? "",
+                manufacture_year: equipment?.manufacture_year ?? new Date().getFullYear(),
+                function: equipment?.function ?? "",
+                delivery_date: equipment?.delivery_date ?? new Date(),
+                location: equipment?.location ?? ""
+              }} />
               <DeleteAlertDialog />
             </CardAction>
           </CardFooter>

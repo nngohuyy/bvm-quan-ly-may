@@ -98,6 +98,44 @@ export const addEquipment = async (equipment: EquipmentFormData) => {
   }
 }
 
+export const editEquipment = async (equipmentId: string, updatedData: Partial<EquipmentFormData>) => {
+  try {
+    const { data, error } = await supabase
+      .from('equipment')
+      .update(updatedData)
+      .eq('id', equipmentId)
+
+    if (error) {
+      throw new Error("Failed to update equipment");
+    }
+
+    console.log("Updated equipment:", data);
+    return data;
+  } catch (error) {
+    console.error("Unexpected Error:", error);
+    return null;
+  }
+}
+
+export const deleteEquipment = async (equipmentId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('equipment')
+      .delete()
+      .eq('id', equipmentId)
+
+    if (error) {
+      throw new Error("Failed to delete equipment");
+    }
+
+    console.log("Deleted equipment:", data);
+    return data;
+  } catch (error) {
+    console.error("Unexpected Error:", error);
+    return null;
+  }
+}
+
 export async function getEquipmentWithHistory(equipmentId: string) {
   try {
     const { data, error } = await supabase

@@ -177,7 +177,7 @@ export function DataTable<TData, TValue>({
           table.getRowModel().rows.map(equipment => (
             <Card key={equipment.getValue('name')}>
               <CardHeader>
-                <CardTitle className="flex items-center">
+                <CardTitle className="flex items-center leading-tight">
                   {equipment.getValue('name')}
                   <span className="font-bold ml-2">
                     <Badge variant={equipment.getValue('status') === 'available' ? 'outline' : 'destructive'}>
