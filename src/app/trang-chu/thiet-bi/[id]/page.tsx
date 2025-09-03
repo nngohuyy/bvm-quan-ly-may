@@ -37,7 +37,6 @@ import { Label } from "@/components/ui/label"
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { PlusIcon } from '@phosphor-icons/react/Plus'
 import { TrashIcon } from '@phosphor-icons/react/Trash'
 import { FloppyDiskIcon } from '@phosphor-icons/react/FloppyDisk'
 import { ListBulletsIcon } from '@phosphor-icons/react/ListBullets'
@@ -49,6 +48,7 @@ import { getEquipmentWithHistory } from '@/utils/supabase'
 import { Equipment } from '@/lib/type'
 import { formatTimestamp } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
+import { MaintenanceHistoryDialog } from '@/components/page/maintenance-history-dialog'
 
 function EditFormDialog({ equipment }: { equipment: typeof mockEquipments[0] | undefined }) {
   const editEquipmentFormInput = [
@@ -241,9 +241,7 @@ export default function EquipmentDetailsPage({
               Lịch sử sửa chữa
             </CardTitle>
             <CardAction className='hidden sm:block'>
-              <Button variant='default'>
-                <PlusIcon className='size-5' weight='duotone' /> Thêm lịch sử sửa chữa
-              </Button>
+              <MaintenanceHistoryDialog equipment_id={id} />
             </CardAction>
           </CardHeader>
           <CardContent>
@@ -288,13 +286,10 @@ export default function EquipmentDetailsPage({
           </CardContent>
           <CardFooter className='justify-end'>
             <CardAction className='flex gap-2 sm:hidden'>
-              <Button variant='default'>
-                <PlusIcon className='size-5' weight='duotone' /> Thêm lịch sử sửa chữa
-              </Button>
+              <MaintenanceHistoryDialog equipment_id={id} />
             </CardAction>
           </CardFooter>
         </Card>
-
       </div>
   )
 }

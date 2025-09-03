@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { EquipmentFormData } from '@/lib/type'
+import { EquipmentFormData, MaintenanceHistoryFormData } from '@/lib/type'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -115,12 +115,26 @@ export async function getEquipmentWithHistory(equipmentId: string) {
       console.log(`No equipment found with ID: ${equipmentId}`);
       return null;
     }
-    
+
     console.log('Successfully fetched equipment details:', data);
     return data;
 
   } catch (err) {
     console.error('An unexpected error occurred:', err);
+    return null;
+  }
+}
+
+export const addMaintenanceHistory = async (submitData: MaintenanceHistoryFormData) => {
+  try {
+    const { data, error } = await supabase
+      .from('maintenance_history')
+      .insert([submitData])
+
+    console.log("Added maintenance history:", data);
+    return error;
+  } catch (error) {
+    console.log('Unexpected Error:', error);
     return null;
   }
 }

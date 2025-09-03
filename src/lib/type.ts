@@ -6,14 +6,18 @@ export type User = {
   updated_at: Date
 }
 
-export type MaintenanceHistory = {
-  id: string
+export interface MaintenanceHistoryFormData {
   equipment_id: string
-  maintenance_date: Date
+  performed_by: string
   description: string
-  profiles: User
   condition: string
   location: string
+}
+
+export interface MaintenanceHistory extends MaintenanceHistoryFormData {
+  id: string
+  profiles: User,
+  maintenance_date: Date
 }
 
 export interface EquipmentFormData {
