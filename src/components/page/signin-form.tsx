@@ -21,14 +21,17 @@ export function SignInForm({
   const router = useRouter();
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const email = e.currentTarget.username.value + '@benhvienmattphcm.com';
-    const password = e.currentTarget.password.value;
-    const { error } = await signInUser(email, password);
-    if (!error) {
-      router.push("/trang-chu");
+    try {
+      e.preventDefault();
+      const email = e.currentTarget.username.value + '@benhvienmattphcm.com';
+      const password = e.currentTarget.password.value;
+      const data = await signInUser(email, password);
+      if (data) {
+        router.push("/trang-chu");
+      }
+    } catch (error) {
+      console.log(error);
     }
-    return;
   };
 
   return (
