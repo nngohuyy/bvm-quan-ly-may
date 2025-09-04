@@ -2,7 +2,7 @@ import { SignUpForm } from "@/components/page/signup-form"
 
 export default function SignUpPage() {
   return (
-    <div className="relative flex min-h-svh flex-col items-center justify-center p-6 md:p-10 overflow-hidden">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center p-6 md:p-10 overflow-hidden">
       <div className="absolute inset-0 bg-[url('/backgrounds/bvm-bg-1.jpg')] bg-cover bg-no-repeat bg-center blur-lg"></div>
       <div className="absolute inset-0 bg-white/75"></div>
       <div className="relative z-10 flex w-full max-w-sm flex-col gap-6">

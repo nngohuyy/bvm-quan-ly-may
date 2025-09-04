@@ -25,7 +25,7 @@ export default function RootLayout({
   const [open, setOpen] = useState(true);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <SidebarProvider open={open} onOpenChange={setOpen}>
         <AppSidebar />
         <div className="transition-all flex flex-col flex-1 h-screen">

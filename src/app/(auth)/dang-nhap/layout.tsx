@@ -11,7 +11,7 @@ export default function SignInLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="font-[family-name:var(--font-plus-jakarta-sans)] min-h-screen">
+    <div className="font-[family-name:var(--font-plus-jakarta-sans)] min-h-dvh">
       {children}
     </div>
   );
