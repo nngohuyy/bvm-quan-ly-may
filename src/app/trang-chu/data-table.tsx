@@ -190,7 +190,7 @@ export function DataTable<TData, TValue>({
               <CardContent>
                 <p>Model: <span className="font-bold">{equipment.getValue('model')}</span></p>
                 <p>Vị trí: <span className="font-bold">{equipment.getValue('location')}</span></p>
-                <p>Ngày bàn giao: <span className="font-bold">{equipment.getValue('delivery_date')}</span></p>
+                <p>Năm bàn giao: <span className="font-bold">{equipment.getValue('delivery_date')}</span></p>
               </CardContent>
               <CardFooter>
                 <Link href={`/trang-chu/thiet-bi/${equipment.getValue('id')}`} className="w-full">

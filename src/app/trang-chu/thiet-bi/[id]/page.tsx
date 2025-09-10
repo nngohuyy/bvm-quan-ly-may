@@ -111,7 +111,7 @@ export default function EquipmentDetailsPage({
                 place_of_origin: equipment?.place_of_origin ?? "",
                 manufacture_year: equipment?.manufacture_year ?? new Date().getFullYear(),
                 function: equipment?.function ?? "",
-                delivery_date: equipment?.delivery_date ?? new Date(),
+                delivery_date: equipment?.delivery_date ?? new Date().getFullYear(),
                 location: equipment?.location ?? ""
               }} />
               <DeleteAlertDialog id={id} />
@@ -131,7 +131,7 @@ export default function EquipmentDetailsPage({
               Năm sản xuất: <span className='font-normal text-black'>{equipment?.manufacture_year}</span>
             </p>
             <p className='font-bold text-gray-500'>
-              Ngày bàn giao: <span className='font-normal text-black'>{formatTimestamp(equipment?.delivery_date ? equipment.delivery_date.toLocaleString() : '')}</span>
+              Năm bàn giao: <span className='font-normal text-black'>{equipment?.delivery_date}</span>
             </p>
             <p className='font-bold text-gray-500'>
               Vị trí đặt: <span className='font-normal text-black'>{equipment?.location}</span>
@@ -162,7 +162,7 @@ export default function EquipmentDetailsPage({
                 place_of_origin: equipment?.place_of_origin ?? "",
                 manufacture_year: equipment?.manufacture_year ?? new Date().getFullYear(),
                 function: equipment?.function ?? "",
-                delivery_date: equipment?.delivery_date ?? new Date(),
+                delivery_date: equipment?.delivery_date ?? new Date().getFullYear(),
                 location: equipment?.location ?? ""
               }} />
               <DeleteAlertDialog id={id} />

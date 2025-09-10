@@ -26,7 +26,7 @@ export interface EquipmentFormData {
   place_of_origin: string
   manufacture_year: number
   function: string
-  delivery_date: Date
+  delivery_date: number
   location: string
 }
 

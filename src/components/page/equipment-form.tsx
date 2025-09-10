@@ -2,14 +2,11 @@
 
 import { z } from "zod"
 import { toast } from "sonner"
-import { format } from "date-fns"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import {
   Form,
   FormControl,
@@ -19,12 +16,13 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
-import { CalendarBlankIcon } from "@phosphor-icons/react/dist/ssr/CalendarBlank"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { addEquipment, editEquipment } from "@/utils/supabase"
 
@@ -39,18 +37,26 @@ const FormSchema = z.object({
     message: "Nơi sản xuất phải có ít nhất 2 ký tự.",
   }),
   manufacture_year: z.number().int().refine(year => year <= new Date().getFullYear(), {
-    message: "Năm không được ở tương lai",
+    message: "Năm sản xuất không được ở tương lai",
   }),
   function: z.string().min(2, {
     message: "Chức năng phải có ít nhất 2 ký tự.",
   }),
-  delivery_date: z.date().min(new Date('2023-01-01'), {
-    message: 'Ngày bàn giao phải sau ngày 1 tháng 1 năm 2023'
+  delivery_date: z.number().int().refine(year => year <= new Date().getFullYear(), {
+    message: 'Năm giao hàng không được ở tương lai',
   }),
   location: z.string().min(2, {
     message: "Vị trí đặt phải có ít nhất 2 ký tự.",
   }),
-})
+}).refine(data => data.delivery_date >= data.manufacture_year, {
+  message: "Năm bàn giao không được trước năm sản xuất.",
+  path: ['delivery_date'],
+});
+
+const yearDropdownOptions = Array.from({ length: 100 }, (_, i) => {
+  const year = new Date().getFullYear() - i;
+  return { label: year.toString(), value: year };
+});
 
 export function AddEquipmentForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -61,9 +67,10 @@ export function AddEquipmentForm() {
       place_of_origin: "",
       manufacture_year: new Date().getFullYear(),
       function: "",
-      delivery_date: new Date(),
+      delivery_date: new Date().getFullYear(),
       location: "",
     },
+    mode: "onChange",
   })
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -82,7 +89,7 @@ export function AddEquipmentForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <ScrollArea className="h-[400px]">
-          <div className="grid gap-4">
+          <div className="grid gap-4 mr-5">
             <FormField
               control={form.control}
               name="name"
@@ -122,28 +129,62 @@ export function AddEquipmentForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="manufacture_year"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Năm sản xuất</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Nhập năm sản xuất"
-                      {...field}
-                      value={field.value || ""}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(value ? Number(value) : undefined);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 items-start gap-4">
+              <FormField
+                control={form.control}
+                name="manufacture_year"
+                render={({ field }) => (
+                  <FormItem key={form.getValues('manufacture_year')}>
+                    <FormLabel>Năm sản xuất</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange(Number(value))}
+                      value={field.value?.toString()} // Change defaultValue to value
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Chọn năm sản xuất" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {yearDropdownOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value.toString()}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="delivery_date"
+                render={({ field }) => (
+                  <FormItem key={form.getValues('delivery_date')} className="flex flex-col">
+                    <FormLabel>Năm bàn giao</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange(Number(value))}
+                      value={field.value?.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Chọn năm bàn giao" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {yearDropdownOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value.toString()}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="function"
@@ -153,47 +194,6 @@ export function AddEquipmentForm() {
                   <FormControl>
                     <Input placeholder="Nhập chức năng" {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="delivery_date"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Ngày bàn giao</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Chọn ngày bàn giao</span>
-                          )}
-                          <CalendarBlankIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        captionLayout="dropdown"
-                      />
-                    </PopoverContent>
-                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -233,6 +233,7 @@ export function EditEquipmentForm({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: initialData,
+    mode: "onChange",
   })
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -251,7 +252,7 @@ export function EditEquipmentForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <ScrollArea className="h-[400px]">
-          <div className="grid gap-4">
+          <div className="grid gap-4 mr-5">
             <FormField
               control={form.control}
               name="name"
@@ -291,25 +292,62 @@ export function EditEquipmentForm({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="manufacture_year"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Năm sản xuất</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Nhập năm sản xuất"
-                      value={field.value || ""}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(value ? Number(value) : undefined);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 items-start gap-4">
+              <FormField
+                control={form.control}
+                name="manufacture_year"
+                render={({ field }) => (
+                  <FormItem key={form.getValues('manufacture_year')}>
+                    <FormLabel>Năm sản xuất</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange(Number(value))}
+                      value={field.value?.toString()} // Change defaultValue to value
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Chọn năm sản xuất" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {yearDropdownOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value.toString()}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="delivery_date"
+                render={({ field }) => (
+                  <FormItem key={form.getValues('delivery_date')} className="flex flex-col">
+                    <FormLabel>Năm bàn giao</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange(Number(value))}
+                      value={field.value?.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Chọn năm bàn giao" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {yearDropdownOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value.toString()}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="function"
@@ -319,47 +357,6 @@ export function EditEquipmentForm({
                   <FormControl>
                     <Input placeholder="Nhập chức năng" {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="delivery_date"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Ngày bàn giao</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Chọn ngày bàn giao</span>
-                          )}
-                          <CalendarBlankIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        captionLayout="dropdown"
-                      />
-                    </PopoverContent>
-                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}

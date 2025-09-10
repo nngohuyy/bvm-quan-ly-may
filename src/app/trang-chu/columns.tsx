@@ -31,7 +31,7 @@ export const visibilityOptions = [
   { label: "Nơi sản xuất", value: "place_of_origin" },
   { label: "Năm sản xuất", value: "manufacture_year" },
   { label: "Chức năng", value: "function" },
-  { label: "Ngày nhập kho", value: "delivery_date" },
+  { label: "Năm bàn giao", value: "delivery_date" },
   { label: "Vị trí", value: "location" },
   { label: "Trạng thái", value: "status" },
   { label: "Hành động", value: "actions" },
@@ -76,11 +76,7 @@ export const columns: ColumnDef<Equipment>[] = [
   },
   {
     accessorKey: "delivery_date",
-    header: () => <div className="font-bold">Ngày nhập kho</div>,
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("delivery_date"))
-      return date.toLocaleDateString('vi-VN')
-    },
+    header: () => <div className="font-bold">Năm bàn giao</div>,
   },
   {
     accessorKey: "location",
