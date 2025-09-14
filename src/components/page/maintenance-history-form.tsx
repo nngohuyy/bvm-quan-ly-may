@@ -4,6 +4,8 @@ import { z } from "zod"
 import { toast } from "sonner"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -22,11 +24,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+
+import { CalendarBlankIcon } from "@phosphor-icons/react"
 
 import { addMaintenanceHistory } from "@/utils/supabase"
 import { useAuth } from "@/context/AuthContext"
 
 const FormSchema = z.object({
+  maintenance_date: z.date().min(new Date('2001-01-01'), {
+    message: 'Ngày bàn giao phải sau ngày 01 tháng 01 năm 2001'
+  }),
   description: z.string().min(2, {
     message: "Mô tả phải có ít nhất 2 ký tự.",
   }),
@@ -42,6 +55,7 @@ export function MaintenanceHistoryForm({ equipment_id }: { equipment_id: string 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      maintenance_date: new Date(),
       description: "",
       condition: "",
       location: "",
@@ -53,7 +67,13 @@ export function MaintenanceHistoryForm({ equipment_id }: { equipment_id: string 
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
-      const error = await addMaintenanceHistory({ equipment_id, performed_by, ...data });
+      const formattedData = {
+        equipment_id,
+        performed_by,
+        ...data,
+        maintenance_date: format(data.maintenance_date, "yyyy-MM-dd"),
+      }
+      const error = await addMaintenanceHistory(formattedData);
       if (error) {
         throw error;
       }
@@ -63,12 +83,64 @@ export function MaintenanceHistoryForm({ equipment_id }: { equipment_id: string 
       console.error("Lỗi khi thêm lịch sử bảo trì:", error);
       toast.error("Đã xảy ra lỗi khi thêm lịch sử.");
     }
+    // const formattedData = {
+    //   ...data,
+    //   maintenance_date: format(data.maintenance_date, "yyyy-MM-dd"),
+    // };
+    // toast("You submitted the following values", {
+    //   description: (
+    //     <pre className="mt-2 rounded-md bg-neutral-950 p-4">
+    //       <code className="text-white">{JSON.stringify(formattedData, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // })
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="grid gap-4">
+          <FormField
+            control={form.control}
+            name="maintenance_date"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Ngày bảo trì</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "yyyy-MM-dd")
+                        ) : (
+                          <span>Chọn ngày bảo trì</span>
+                        )}
+                        <CalendarBlankIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      captionLayout="dropdown"
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="description"

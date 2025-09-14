@@ -4,6 +4,11 @@ import Link from "next/link"
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 import { FunnelSimpleIcon } from "@phosphor-icons/react/FunnelSimple"
 import { EyeIcon } from "@phosphor-icons/react/Eye"
@@ -73,6 +78,18 @@ export const columns: ColumnDef<Equipment>[] = [
   {
     accessorKey: "function",
     header: () => <div className="font-bold">Chức năng</div>,
+    cell: ({ row }) => {
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <p className="max-w-2xs truncate">{row.getValue("function")}</p>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.getValue("function")}</p>
+          </TooltipContent>
+        </Tooltip>
+      )
+    }
   },
   {
     accessorKey: "delivery_date",
@@ -94,7 +111,7 @@ export const columns: ColumnDef<Equipment>[] = [
         case "available":
           classNameBadge = 'rounded-full border-none bg-green-600/10 text-green-600 focus-visible:ring-green-600/20 focus-visible:outline-none dark:bg-green-400/10 dark:text-green-400 dark:focus-visible:ring-green-400/40 [a&]:hover:bg-green-600/5 dark:[a&]:hover:bg-green-400/5'
           classNameDot = 'size-1.5 rounded-full bg-green-600 dark:bg-green-400'
-          translation = "Bình thường"
+          translation = "Đang hoạt động"
           break
         case "under_maintenance":
           classNameBadge = 'bg-destructive/10 [a&]:hover:bg-destructive/5 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive rounded-full border-none focus-visible:outline-none'
