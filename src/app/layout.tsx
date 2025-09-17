@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hệ thống Quản lý máy Khoa Chẩn đoán Hình ảnh - Bệnh viện Mắt TP.HCM",
+  title: "Hệ thống Quản lý máy",
   description: "Hệ thống Quản lý máy - Khoa Chẩn đoán hình ảnh và Thăm dò chức năng nhãn khoa - Bệnh viện Mắt TP.HCM",
 };
 

@@ -34,7 +34,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarBlankIcon } from "@phosphor-icons/react"
 
 import { addMaintenanceHistory } from "@/utils/supabase"
-import { useAuth } from "@/context/AuthContext"
+// import { useAuth } from "@/context/AuthContext"
 
 const FormSchema = z.object({
   maintenance_date: z.date().min(new Date('2001-01-01'), {
@@ -42,6 +42,9 @@ const FormSchema = z.object({
   }),
   description: z.string().min(2, {
     message: "Mô tả phải có ít nhất 2 ký tự.",
+  }),
+  performed_by: z.string().min(1, {
+    message: "Người thực hiện không được để trống.",
   }),
   condition: z.string().min(2, {
     message: "Tình trạng phải có ít nhất 2 ký tự.",
@@ -57,19 +60,19 @@ export function MaintenanceHistoryForm({ equipment_id }: { equipment_id: string 
     defaultValues: {
       maintenance_date: new Date(),
       description: "",
+      performed_by: "",
       condition: "",
       location: "",
     },
   })
 
-  const { profile } = useAuth();
-  const performed_by = profile?.id || "";
+  // const { profile } = useAuth();
+  // const performed_by = profile?.id || "";
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       const formattedData = {
         equipment_id,
-        performed_by,
         ...data,
         maintenance_date: format(data.maintenance_date, "yyyy-MM-dd"),
       }
@@ -184,6 +187,19 @@ export function MaintenanceHistoryForm({ equipment_id }: { equipment_id: string 
                 <FormLabel>Vị trí</FormLabel>
                 <FormControl>
                   <Input placeholder="Nhập vị trí" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="performed_by"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Người thực hiện</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nhập tên người thực hiện" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

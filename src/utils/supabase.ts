@@ -140,7 +140,7 @@ export async function getEquipmentWithHistory(equipmentId: string) {
   try {
     const { data, error } = await supabase
       .from('equipment')
-      .select('*, maintenance_history(*, profiles(full_name))')
+      .select('*, maintenance_history(*)')
       .eq('id', equipmentId)
       .single();
 

@@ -197,7 +197,7 @@ export default function EquipmentDetailsPage({
                       {formatTimestamp(repair.maintenance_date.toLocaleString())}
                     </td>
                     <td className="pr-10 py-0">{repair.description}</td>
-                    <td className="pr-10 py-0">{repair.profiles.full_name}</td>
+                    <td className="pr-10 py-0">{repair.performed_by}</td>
                     <td className="pr-10 py-0">{repair.location}</td>
                     <td className="pr-10 py-0">
                       {
