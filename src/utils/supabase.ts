@@ -80,6 +80,40 @@ export const getAllEquipments = async () => {
   }
 };
 
+export const getAllRoles = async () => {
+  try {
+    const { data: roles, error } = await supabase
+      .from('roles')
+      .select('*')
+
+    if (error) {
+      throw new Error("Failed to fetch roles");
+    }
+    console.log("Fetched roles:", roles);
+    return roles;
+  } catch (error) {
+    console.log('Unexpected Error:', error);
+    return null;
+  }
+}
+
+export const getAllRoleNames = async () => {
+  try {
+    const { data: roles, error } = await supabase
+      .from('roles')
+      .select('name')
+
+    if (error) {
+      throw new Error("Failed to fetch role names");
+    }
+    console.log("Fetched role names:", roles);
+    return roles?.map(role => role.name);
+  } catch (error) {
+    console.log('Unexpected Error:', error);
+    return null;
+  }
+}
+
 export const addEquipment = async (equipment: EquipmentFormData) => {
   try {
     const { data, error } = await supabase

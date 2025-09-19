@@ -1,6 +1,10 @@
 "use client"
 
-import { FormEvent } from 'react';
+import { useState, useEffect } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,21 +13,72 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { signUpUser } from "@/utils/supabase"
+import { getAllRoleNames, signUpUser } from "@/utils/supabase"
+
+const formSchema = z.object({
+  full_name: z.string().min(2, {
+    message: "Họ và tên phải có ít nhất 2 ký tự",
+  }),
+  username: z.string().min(2, {
+    message: "Tên đăng nhập phải có ít nhất 2 ký tự",
+  }),
+  password: z.string().min(6, {
+    message: "Mật khẩu phải có ít nhất 6 ký tự",
+  }),
+  role_name: z.string().min(2, {
+    message: "Vui lòng chọn vai trò",
+  }),
+})
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const email = e.currentTarget.username.value + '@benhvienmattphcm.com';
-    const password = e.currentTarget.password.value;
-    const full_name = e.currentTarget.full_name.value;
-    const username = e.currentTarget.username.value;
-    const role_name = 'nurse';
+  const [roleNames, setRoleNames] = useState<string[]>([]);
+
+  useEffect(() => {
+    getAllRoleNames().then((roles) => {
+      if (Array.isArray(roles)) {
+        setRoleNames(roles);
+      }
+    });
+  }, []);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      full_name: "",
+      username: "",
+      password: "",
+      role_name: "",
+    },
+  })
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const email = values.username + '@benhvienmattphcm.com';
+    const password = values.password;
+    const full_name = values.full_name;
+    const username = values.username;
+    const role_name = values.role_name;
     await signUpUser(email, password, full_name, username, role_name);
   };
 
@@ -34,41 +89,83 @@ export function SignUpForm({
           <CardTitle className="text-xl">Đăng ký tài khoản</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={onSubmit}>
-            <div className="grid gap-6">
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="full_name">Họ và tên</Label>
-                  <Input
-                    id="full_name"
-                    type="text"
-                    placeholder="Nhập họ và tên"
-                    required
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="username">Tên đăng nhập</Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    placeholder="Nhập tên đăng nhập"
-                    required
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Mật khẩu</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Nhập mật khẩu"
-                    required />
-                </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="full_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Họ và tên</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nhập họ và tên đầy đủ" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tên đăng nhập</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nhập tên đăng nhập" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mật khẩu</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="Mật khẩu" {...field} />
+                    </FormControl>
+                    <FormDescription>Mật khẩu phải có ít nhất 6 ký tự.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="role_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vai trò</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Chọn vai trò" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Vai trò</SelectLabel>
+                          {roleNames.map((role) => (
+                            <SelectItem key={role} value={role} className="capitalize">
+                              {role.charAt(0).toUpperCase() + role.slice(1)}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>Chọn vai trò của bạn trong hệ thống.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="mt-6">
                 <Button type="submit" className="w-full">
                   Đăng ký
                 </Button>
               </div>
-            </div>
-          </form>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
