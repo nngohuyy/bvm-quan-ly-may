@@ -38,12 +38,12 @@ export default function RootLayout({
           antialiased font-[family-name:var(--font-plus-jakarta-sans)]`
         }
       >
-        <AuthProvider>
-          <ProtectedRoutes>
+        {/* <AuthProvider> */}
+          {/* <ProtectedRoutes> */}
             {children}
             <Toaster />
-          </ProtectedRoutes>
-        </AuthProvider>
+          {/* </ProtectedRoutes> */}
+        {/* </AuthProvider> */}
       </body>
     </html>
   );

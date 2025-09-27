@@ -1,8 +1,7 @@
 "use client"
 
-import { FormEvent } from "react"
 import { cn } from "@/lib/utils"
-import { useRouter } from "next/navigation"
+import { signInUser } from "@/app/(auth)/action"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -10,25 +9,45 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { signInUser } from "@/utils/supabase"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Tên đăng nhập phải có ít nhất 2 ký tự",
+  }),
+  password: z.string().min(6, {
+    message: "Mật khẩu phải có ít nhất 6 ký tự",
+  }),
+})
 
 export function SignInForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  })
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      e.preventDefault();
-      const email = e.currentTarget.username.value + '@benhvienmattphcm.com';
-      const password = e.currentTarget.password.value;
-      const data = await signInUser(email, password);
-      if (data) {
-        router.push("/trang-chu");
-      }
+      const email = values.username + '@benhvienmattphcm.com';
+      const password = values.password;
+      await signInUser(email, password);
     } catch (error) {
       console.log(error);
     }
@@ -41,40 +60,46 @@ export function SignInForm({
           <CardTitle className="text-xl">Đăng nhập</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={onSubmit}>
-            <div className="grid gap-6">
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="username">Tên đăng nhập</Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    placeholder="Nhập tên đăng nhập"
-                    required
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Mật khẩu</Label>
-                    <a
-                      href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                      Quên mật khẩu?
-                    </a>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Nhập mật khẩu"
-                    required />
-                </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tên đăng nhập</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nhập tên đăng nhập" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mật khẩu</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Nhập mật khẩu"
+                        autoComplete="on"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="mt-4">
                 <Button type="submit" className="w-full">
                   Đăng nhập
                 </Button>
               </div>
-            </div>
-          </form>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

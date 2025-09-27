@@ -32,7 +32,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { getAllRoleNames, signUpUser } from "@/utils/supabase"
+import { getAllRoleNames } from "@/utils/supabase"
+import { signUpUser } from "@/app/(auth)/action"
 
 const formSchema = z.object({
   full_name: z.string().min(2, {
