@@ -16,7 +16,7 @@ export default function RootLayout({
       <SidebarProvider>
         <AppSidebar />
         <div className="transition-all flex flex-col flex-1 h-screen">
-          <div className="h-20 w-full flex justify-between items-center border-b px-4 bg-background sticky top-0 z-10">
+          <div className="h-20 w-full flex justify-between items-center border-b px-8 bg-background sticky top-0 z-10">
             <SidebarTrigger />
             <div className="flex items-center gap-2">
               <Button variant="ghost" className="!p-4">

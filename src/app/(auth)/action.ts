@@ -50,7 +50,6 @@ export const signInUser = async (email: string, password: string) => {
     return null;
   }
   try {
-    console.log(email, password);
     const { error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,

@@ -64,8 +64,8 @@ const roleMap = [
 ]
 
 interface UserData {
+  full_name: string | null;
   username: string | null;
-  email: string | null;
   role: string | null;
 }
 
@@ -106,11 +106,11 @@ export function AppSidebarClient({user } : {user: UserData}) {
       <SidebarFooter className="px-1 py-4 sm:px-2">
         <div className="flex flex-row items-center gap-3 mb-3 px-2">
           <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+            <AvatarImage src="https://avatar.iran.liara.run/public" alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-xs sm:text-sm font-medium text-gray-900 truncate uppercase">{user.email}</p>
+            <p className="text-xs sm:text-sm font-medium text-gray-900 truncate uppercase">{user.full_name}</p>
             <p className="text-xs text-gray-500 truncate my-0.5">@{user.username}</p>
             <Badge variant="outline" className="px-2 py-0.5 text-xs">{roleMap.find((role) => role.key === user.role)?.title}</Badge>
           </div>
