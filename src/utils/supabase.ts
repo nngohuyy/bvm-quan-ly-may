@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/client'
 import { EquipmentFormData, MaintenanceHistoryFormData } from '@/lib/type'
 
-const supabase = createClient()
+export const supabase = createClient()
 
 export const getAllEquipments = async () => {
   try {
