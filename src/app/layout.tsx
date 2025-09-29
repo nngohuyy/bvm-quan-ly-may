@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
-import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
-import ProtectedRoutes from "@/context/ProtectedRoutes";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -38,12 +36,8 @@ export default function RootLayout({
           antialiased font-[family-name:var(--font-plus-jakarta-sans)]`
         }
       >
-        <AuthProvider>
-          <ProtectedRoutes>
-            {children}
-            <Toaster />
-          </ProtectedRoutes>
-        </AuthProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );

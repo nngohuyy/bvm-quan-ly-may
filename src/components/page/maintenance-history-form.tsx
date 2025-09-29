@@ -34,7 +34,6 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarBlankIcon } from "@phosphor-icons/react"
 
 import { addMaintenanceHistory } from "@/utils/supabase"
-// import { useAuth } from "@/context/AuthContext"
 
 const FormSchema = z.object({
   maintenance_date: z.date().min(new Date('2001-01-01'), {
@@ -65,9 +64,6 @@ export function MaintenanceHistoryForm({ equipment_id }: { equipment_id: string 
       location: "",
     },
   })
-
-  // const { profile } = useAuth();
-  // const performed_by = profile?.id || "";
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
