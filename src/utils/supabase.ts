@@ -150,3 +150,21 @@ export const addMaintenanceHistory = async (submitData: MaintenanceHistoryFormDa
     return null;
   }
 }
+
+export const editMaintenanceHistory = async (id: string, updatedData: Partial<MaintenanceHistoryFormData>) => {
+  try {
+    const { data, error } = await supabase
+      .from('maintenance_history')
+      .update(updatedData)
+      .eq('id', id)
+    if (error) {
+      throw new Error("Failed to update maintenance history");
+    }
+    console.log("Updated maintenance history:", data);
+    return data;
+  }
+  catch (error) {
+    console.error("Unexpected Error:", error);
+    return null;
+  }
+}

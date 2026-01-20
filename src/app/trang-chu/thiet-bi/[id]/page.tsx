@@ -32,7 +32,7 @@ import { deleteEquipment, getEquipmentWithHistory } from '@/utils/supabase'
 import { Equipment } from '@/lib/type'
 import { formatTimestamp } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
-import { MaintenanceHistoryDialog } from '@/components/page/maintenance-history-dialog'
+import { EditMaintenanceHistoryDialog, MaintenanceHistoryDialog } from '@/components/page/maintenance-history-dialog'
 import { EditFormDialog } from '@/components/page/equipment-dialog'
 import { toast } from 'sonner'
 
@@ -188,6 +188,7 @@ export default function EquipmentDetailsPage({
                   <th className="text-left pr-10 py-0">Người thực hiện</th>
                   <th className="text-left pr-10 py-0">Vị trí sửa chữa</th>
                   <th className="text-left pr-10 py-0">Tình trạng</th>
+                  <th className="text-left pr-10 py-0"></th>
                 </tr>
               </thead>
               <tbody>
@@ -213,6 +214,9 @@ export default function EquipmentDetailsPage({
                           Cần sửa chữa
                         </Badge>
                       }
+                    </td>
+                    <td className="pr-10 py-0">
+                      <EditMaintenanceHistoryDialog id={repair.id} equipment_id={id} repair={repair} />
                     </td>
                   </tr>
                 ))}
